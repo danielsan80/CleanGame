@@ -1,6 +1,21 @@
 {
+    "name": "Dan/CleanGame",
+    "authors": [
+        {
+            "name": "Danilo Sanchi",
+            "email": "danilo.sanchi@gmail.com"
+        }
+    ],
+
     "require": {
-        "silex/silex": "1.0.*"
+        "silex/silex": "1.0.*",
+        "symfony/browser-kit": ">=2.1,<2.3-dev",
+        "symfony/css-selector": ">=2.1,<2.3-dev"
     },
-    "minimum-stability": "dev"
+
+    "minimum-stability": "dev",
+    
+    "autoload": {
+        "psr-0": {"CleanGame": "src/"}
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Idrolab\Test\WebTestCase;
+use CleanGame\Test\WebTestCase;
 
 class HomepageTest extends WebTestCase
 {
