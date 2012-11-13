@@ -1,0 +1,11 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <table class="activities">
+        {% for activity in activities %}
+            <tr>
+                <td>{{activity.title}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

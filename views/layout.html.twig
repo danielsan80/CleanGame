@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clean Game{% endblock %}
+
+{% block stylesheet %}
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="container well">
+        <div class="header row">
+            {% block header %}
+                <div class="span12">
+                    <h1>Clean Game</h1>
+                </div>
+            {% endblock %}
+        </div>
+        <div class="main row">
+            <div class="span12">
+                {% block main %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="/js/jquery-1.8.2.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+{% endblock %}

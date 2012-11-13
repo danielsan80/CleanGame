@@ -12,7 +12,9 @@ class HomepageTest extends WebTestCase
 
         $this->assertTrue($client->getResponse()->isOk());
         
-        $this->assertEquals('hello world', $crawler->filter('h1')->first()->text());
+        $this->assertEquals('Clean Game', $crawler->filter('h1')->first()->text());
+        $this->assertCount(1, $crawler->filter('table.activities'));
+        $this->assertCount(3, $crawler->filter('table.activities tr'));
     }
 
 }
