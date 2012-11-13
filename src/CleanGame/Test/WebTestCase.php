@@ -10,7 +10,8 @@ class WebTestCase extends BaseTestCase
     {
         $app = require __DIR__ . '/../../../app/app.php';
         $app['debug'] = true;
-        $this->app['session.test'] = true;
+
+        $app['session.test'] = true;
         unset($app['exception_handler']);
         //$app['exception_handler']->disable();
 
