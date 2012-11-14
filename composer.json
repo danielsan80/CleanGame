@@ -12,7 +12,10 @@
         "symfony/browser-kit": ">=2.1,<2.3-dev",
         "symfony/css-selector": ">=2.1,<2.3-dev",
         "twig/twig": ">=1.8,<2.0-dev",
-        "symfony/twig-bridge": "2.1.*"
+        "symfony/twig-bridge": "2.1.*",
+        "symfony/yaml": "2.1.*",
+        "igorw/config-service-provider": "1.0.*",
+        "guzzle/silex-provider": "*"
     },
 
     "minimum-stability": "dev",

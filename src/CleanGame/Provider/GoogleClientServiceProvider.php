@@ -26,13 +26,14 @@ class GoogleClientServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $client = new \CleanGame\Google\Client();
-        $client->setApplicationName('Clean Game');
+        $config = $app['config']['google']['client'];
+        $client->setApplicationName($config['applicationName']);
         // Visit https://code.google.com/apis/console?api=plus to generate your
         // client id, client secret, and to register your redirect uri.
-        $client->setClientId('633253106061.apps.googleusercontent.com');
-        $client->setClientSecret('dNp4bDPatHTbD-EZrSxPai2H');
-        $client->setRedirectUri('http://cleangame.local.com/oauth2callback');
-        $client->setDeveloperKey('AIzaSyB7200AAYs9sOjD7x9F-eF8oHtkLaMBPdI');
+        $client->setClientId($config['clientId']);
+        $client->setClientSecret($config['clientSecret']);
+        $client->setRedirectUri($config['redirectUri']);
+        $client->setDeveloperKey($config['developerKey']);
         $app['google.client'] = $client;
         
         $app['google.calendar'] = new \CleanGame\Google\CalendarService($app['google.client']);
