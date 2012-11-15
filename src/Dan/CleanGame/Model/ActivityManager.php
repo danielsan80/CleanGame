@@ -1,6 +1,6 @@
 <?php
 
-use Dan\CleanGame\Model;
+namespace Dan\CleanGame\Model;
 
 class ActivityManager
 {

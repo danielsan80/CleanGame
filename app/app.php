@@ -15,18 +15,15 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 
-$app->register(new Dan\CleanGame\Provider\GoogleClientServiceProvider());
+$app->register(new Guzzle\GuzzleServiceProvider());
 
-$app->register(new Guzzle\GuzzleServiceProvider(), array(
-//    'guzzle.services' => '/path/to/services.js',
-//    'guzzle.class_path' => '/path/to/guzzle/src'
-));
+$app->register(new Dan\CleanGame\Provider\ModelProvider());
 
 $app['debug'] = true;
 
 $app->get('/', function() use ($app) {
     
-    $activities = $app['dan.cleangame.manager']->getActivities();
+    $activities = $app['cleangame.manager.activity']->getActivities();
     return $app['twig']->render('activities.html.twig', array(
             'activities' => $activities,
         ));
