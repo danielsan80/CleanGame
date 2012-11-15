@@ -24,10 +24,24 @@ $app['debug'] = true;
 $app->get('/', function() use ($app) {
     
     $activities = $app['cleangame.manager.activity']->getActivities();
+    
     return $app['twig']->render('activities.html.twig', array(
             'activities' => $activities,
         ));
     
 })->bind('home');
+
+$app->post('/activity/{id}/owner', function($id) use ($app) {
+    
+    $request = $app['request'];
+    $owner = $request->get('owner');
+    $activityManager = $app['cleangame.manager.activity'];
+    $activity = $activityManager->find($id);
+    $activity->setOwner($owner);
+    $activityManager->save($activity);
+    
+    return true;
+    
+})->bind('setOwner');
 
 return $app;

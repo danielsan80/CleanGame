@@ -28,6 +28,7 @@ class ModelProvider implements ServiceProviderInterface
             $activityManager = new ActivityManager();
             $activityManager->setGuzzleClient($app['guzzle.client']);
             $activityManager->setGoogleConfig($app['config']['google']);
+            $activityManager->setDataPath($app['config']['data']['path']);
 
             return $activityManager;
         });

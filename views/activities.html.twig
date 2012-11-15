@@ -1,12 +1,49 @@
 {% extends 'layout.html.twig' %}
 
 {% block main %}
-    <a class="logout" href="/logout">Logout</a>
-    <table class="activities">
+    <table class=" table activities">
         {% for activity in activities %}
             <tr>
-                <td>{{activity.summary}}</td>
+                <th class="name" >Attività</th>
+                <th class="points" >Punti</th>
+                <th>Scadenza</th>
+                <th>Fatto?</th>
+                <th>Incaricato</th>
+            </tr>
+            <tr id="{{activity.id}}" class="activity {% if activity.expired %}expired{% endif %}" >
+                <td class="name" >{{activity.name}}</td>
+                <td class="points" >{{activity.points}}</td>
+                <td>{{activity.deadline|date('d/m/Y')}}</td>
+                <td>
+                    {% if activity.done %}
+                        <a class="done" href="#"><i class="icon-ok"></i></a>
+                    {% else %}
+                        <a class="done" href="#"><i class="icon-remove"></i></a>
+                    {% endif %}
+                </td>
+                <td class="owner">
+                    <input type="text" value="{{activity.owner}}" />
+                </td>
             </tr>
         {% endfor %}
     </table>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script>
+        $('td.owner input').bind('change', function() {
+            var input = $(this);
+            var id = input.parents('tr.activity').attr('id');
+            var owner = input.val();
+            $.ajax({
+                url: "/activity/"+id+"/owner",
+                data: {owner: owner},
+                dataType: "text",
+                type: "POST",
+                success: function(data){},
+                error: function(data){console.log(data);}
+            });            
+        });
+    </script>
 {% endblock %}

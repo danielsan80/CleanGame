@@ -1,0 +1,4 @@
+.expired td.name {
+    color: red;
+    font-weight: bold;
+}
