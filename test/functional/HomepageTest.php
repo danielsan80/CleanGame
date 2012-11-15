@@ -1,6 +1,6 @@
 <?php
 
-use CleanGame\Test\WebTestCase;
+use Dan\CleanGame\Test\WebTestCase;
 
 class HomepageTest extends WebTestCase
 {

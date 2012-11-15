@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace CleanGame\Provider;
+namespace Dan\CleanGame\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -25,7 +25,7 @@ class GoogleClientServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $client = new \CleanGame\Google\Client();
+        $client = new \Dan\CleanGame\Google\Client();
         $config = $app['config']['google']['client'];
         $client->setApplicationName($config['applicationName']);
         // Visit https://code.google.com/apis/console?api=plus to generate your
@@ -36,7 +36,7 @@ class GoogleClientServiceProvider implements ServiceProviderInterface
         $client->setDeveloperKey($config['developerKey']);
         $app['google.client'] = $client;
         
-        $app['google.calendar'] = new \CleanGame\Google\CalendarService($app['google.client']);
+        $app['google.calendar'] = new \Dan\CleanGame\Google\CalendarService($app['google.client']);
     }
     
     public function boot(Application $app)

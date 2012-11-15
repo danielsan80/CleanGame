@@ -1,8 +1,8 @@
 <?php
 
-namespace CleanGame\Google;
+namespace Dan\CleanGame\Google;
 
-require_once __DIR__.'/../../../src/Google/google-api-php-client/src/Google_Client.php';
+require_once __DIR__.'/../../../../src/Google/google-api-php-client/src/Google_Client.php';
 
 class Client extends \Google_Client {
 
