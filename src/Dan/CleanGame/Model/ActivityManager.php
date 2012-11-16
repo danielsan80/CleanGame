@@ -35,15 +35,17 @@ class ActivityManager
         //$query->set('timeMax', $end->format('Y-m-d\TH:i:s.000P'));
         $query->set('orderBy', 'startTime');
         $query->set('singleEvents', 'true');
+        $query->set('maxResults', 20);
         $response = $request->send();
         $calendar = json_decode($response->getBody(true));
-        $items = $calendar->items;
+        $items = isset($calendar->items)?$calendar->items:array();
         $cleanGameItems = array();
         $data = $this->getActivitiesData();
-        foreach ($items as $i => $item) {
+        $activities = array();
+        foreach ($items as $i => $event) {
             
-            if ($this->isActivity($item)) {
-                $activities[] = new Activity($item, $this->getActivityData($item->id));
+            if ($this->isActivity($event)) {
+                $activities[] = new Activity($event, $this->getActivityData($event->id));
             }
         }
         
@@ -57,10 +59,11 @@ class ActivityManager
         $request = $client->get('calendars/'.$config['calendar']['id'].'/events/'.$id);
         $response = $request->send();
         $event = json_decode($response->getBody(true));
-        return new Activity($event);
+        return new Activity($event, $this->getActivityData($event->id) );
     }
     
     public function save(Activity $activity) {
+        
         $this->setActivityData($activity->toArray());
     }
     
@@ -111,6 +114,7 @@ class ActivityManager
     
     public function isActivity($item)
     {
+        return true;
         return preg_match('/\[cleangame\]/', $item->summary);
     }
 

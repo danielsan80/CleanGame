@@ -44,4 +44,17 @@ $app->post('/activity/{id}/owner', function($id) use ($app) {
     
 })->bind('setOwner');
 
+$app->post('/activity/{id}/done', function($id) use ($app) {
+    
+    $request = $app['request'];
+    $done = $request->get('done');
+    $activityManager = $app['cleangame.manager.activity'];
+    $activity = $activityManager->find($id);
+    $activity->setDone($done);
+    
+    $activityManager->save($activity);
+    
+    return $done;
+})->bind('setDone');
+
 return $app;

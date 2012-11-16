@@ -74,12 +74,13 @@ class Activity
     
     public function setDone($done = true)
     {
-        if ($done=='1') {
+        if ($done==='1' || $done==='true') {
             $done = true;
         }
-        if ($done=='0') {
+        if ($done==='0' || $done==='false') {
             $done = false;
         }
+        
         $this->done = (bool)$done;
     }
     

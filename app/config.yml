@@ -7,7 +7,7 @@ config:
       redirectUri: http://cleangame.local.com/oauth2callback
       developerKey: AIzaSyB7200AAYs9sOjD7x9F-eF8oHtkLaMBPdI
     calendar:
-      id: 3avjhu7a7qqaid2mv3hdmfjpoc@group.calendar.google.com
+      id: g5p17tlpbuug5a9inhsn3ludpk@group.calendar.google.com
   data:
     path: /data
       
