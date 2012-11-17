@@ -37,6 +37,10 @@ $app->get('/', function() use ($app) {
     
 })->bind('home');
 
+$app->get('/info', function() use ($app) {
+    phpinfo();
+})->bind('info');
+
 $app->match('/teams', function() use ($app) {
     $request = $app['request'];
     
