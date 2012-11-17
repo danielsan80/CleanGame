@@ -8,7 +8,7 @@ class ActivityManager
     
     private $guzzleClient;
     private $googleConfig;
-    private $dataPath;
+    private $store;
     
     public function setGuzzleClient($client) {
         $this->guzzleClient = $client;
@@ -18,8 +18,8 @@ class ActivityManager
         $this->googleConfig = $config;
     }
     
-    public function setDataPath($path) {
-        $this->dataPath = $path;
+    public function setStore($store) {
+        $this->store = $store;
     }
     
     public function getCurrentActivities()
@@ -39,7 +39,7 @@ class ActivityManager
         $events = isset($calendar->items)?$calendar->items:array();
         $activities = array();
         foreach ($events as $i => $event) {
-            $activities[] = new Activity($event, $this->getActivityData($event->id));
+            $activities[] = new Activity($event, $this->store->getEntityData($event->id));
         }
         
         return $activities;
@@ -61,7 +61,7 @@ class ActivityManager
         $events = isset($calendar->items)?$calendar->items:array();
         $activities = array();
         foreach ($events as $i => $event) {
-            $activity = new Activity($event, $this->getActivityData($event->id));
+            $activity = new Activity($event, $this->store->getEntityData($event->id));
             if ($activity->isDone()) {
                 $activities[] = $activity;
             }
@@ -77,57 +77,12 @@ class ActivityManager
         $request = $client->get('calendars/'.$config['calendar']['id'].'/events/'.$id);
         $response = $request->send();
         $event = json_decode($response->getBody(true));
-        return new Activity($event, $this->getActivityData($event->id) );
+        return new Activity($event, $this->store->getEntityData($event->id) );
     }
     
     public function save(Activity $activity) {
         
-        $this->setActivityData($activity->toArray());
+        $this->store->setEntityData($activity->toArray());
     }
     
-    private function getActivitiesDataFilename()
-    {
-        return __DIR__.self::BASE_PATH.$this->dataPath.'/activities.json';
-    }
-    
-    public function getActivitiesData() {
-        $dataFile = $this->getActivitiesDataFilename();
-        if (file_exists($dataFile)) {
-            $data = json_decode(file_get_contents($dataFile));
-        } else {
-            $data = array();
-        }
-        
-        return $data;
-    }
-    
-    private function getActivityData($id) {
-        $data = $this->getActivitiesData();
-        foreach($data as $array) {
-            if ($array->id == $id) {
-                return get_object_vars($array);
-            }
-        }
-        return null;
-    }
-    
-    private function setActivityData($activityData) {
-        $data = $this->getActivitiesData();
-        foreach($data as $i => $array) {
-            if ($array->id == $activityData['id']) {
-                $data[$i] = $activityData;
-                $this->setActivitiesData($data);
-                return;
-            }
-        }
-        $data[] = $activityData;
-        $this->setActivitiesData($data);
-    }
-    
-    private function setActivitiesData($data) {
-        $dataFile = $this->getActivitiesDataFilename();
-        
-        file_put_contents($dataFile, json_encode($data));
-    }
-
 }

@@ -15,6 +15,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Dan\CleanGame\Model\ActivityManager;
 use Dan\CleanGame\Model\TeamManager;
+use Dan\CleanGame\Model\Store;
 
 /**
  * Symfony HttpFoundation component Provider for sessions.
@@ -29,7 +30,7 @@ class ModelProvider implements ServiceProviderInterface
             $activityManager = new ActivityManager();
             $activityManager->setGuzzleClient($app['guzzle.client']);
             $activityManager->setGoogleConfig($app['config']['google']);
-            $activityManager->setDataPath($app['config']['data']['path']);
+            $activityManager->setStore(new Store('/data','activities.yml','id'));
 
             return $activityManager;
         });
@@ -37,7 +38,7 @@ class ModelProvider implements ServiceProviderInterface
         $app['cleangame.manager.team'] = $app->share(function () use ($app) {
             $teamManager = new TeamManager();
             $teamManager->setActivityManager($app['cleangame.manager.activity']);
-            $teamManager->setDataPath($app['config']['data']['path']);
+            $teamManager->setStore(new Store('/data','teams.yml','name'));
 
             return $teamManager;
         });
