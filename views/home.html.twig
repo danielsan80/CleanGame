@@ -1,0 +1,73 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <table class=" table activities">
+        <tr>
+            <th class="name" >Attività</th>
+            <th class="points" >Punti</th>
+            <th>Scadenza</th>
+            <th>Fatto?</th>
+            <th>Incaricato</th>
+        </tr>
+        {% for activity in activities %}
+            <tr id="{{activity.id}}" class="activity {% if activity.expired %}expired{% endif %}" >
+                <td class="name" >{{activity.name}}</td>
+                <td class="points" >{{activity.points}}</td>
+                <td>{{activity.deadline|date('d/m/Y')}}</td>
+                <td class="done" >
+                    {% if activity.done %}
+                        <a class="done" href="#"><i class="icon-ok"></i></a>
+                    {% else %}
+                        <a class="todo" href="#"><i class="icon-remove"></i></a>
+                    {% endif %}
+                </td>
+                <td class="owner">
+                    <input type="text" value="{{activity.owner}}" />
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script>
+        $('td.owner input').bind('change', function() {
+            var input = $(this);
+            var id = input.parents('tr.activity').attr('id');
+            var owner = input.val();
+            $.ajax({
+                url: "/activity/"+id+"/owner",
+                data: {owner: owner},
+                dataType: "text",
+                type: "POST",
+                success: function(data){},
+                error: function(data){alert('communication error');}
+            });            
+        });
+
+        $('td.done a').bind('click', function(event) {
+            event.preventDefault();
+            var a = $(this);           
+            var id = a.parents('tr.activity').attr('id');
+            var done = a.hasClass('todo');
+            $.ajax({
+                url: "/activity/"+id+"/done",
+                data: {done: done},
+                dataType: "text",
+                type: "POST",
+                success: function(data){
+                    if (data=='true') {
+                        a.find('i').removeClass('icon-remove').addClass('icon-ok');
+                        a.removeClass('todo').addClass('done');
+                        console.log(a.attr('class'));
+                    } else {
+                        a.find('i').removeClass('icon-ok').addClass('icon-remove');
+                        a.removeClass('done').addClass('todo');
+                    }
+                },
+                error: function(data){alert('communication error');}
+            });
+        });
+    </script>
+{% endblock %}
