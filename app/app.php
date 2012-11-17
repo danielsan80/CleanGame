@@ -37,13 +37,6 @@ $app->get('/', function() use ($app) {
     
 })->bind('home');
 
-$app->get('/home', function() use ($app) {
-    
-    return $app['twig']->render('home.html.twig', array(
-        ));
-    
-})->bind('home');
-
 $app->match('/teams', function() use ($app) {
     $request = $app['request'];
     
