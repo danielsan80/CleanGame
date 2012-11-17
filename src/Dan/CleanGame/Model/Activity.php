@@ -11,12 +11,20 @@ class Activity
     private $done=false;
     private $owner;
     
-    public function __construct($item, $data=null) {
-        $this->setId($item->id);
-        $this->setName(trim(strtr($item->summary, array('[cleangame]'=>''))));
-        $this->setDeadline(new \DateTime($item->end->date.' -1 day'));
-        
+    public function __construct($item=null, $data=null) {
         if ($data) {
+            if (isset($data['id'])) {
+                $this->setId($data['id']);
+            }
+            if (isset($data['name'])) {
+                $this->setName($data['name']);
+            }
+            if (isset($data['deadline'])) {
+                $this->setDeadline($data['deadline']);
+            }
+            if (isset($data['points'])) {
+                $this->setPoints($data['points']);
+            }
             if (isset($data['done'])) {
                 $this->setDone($data['done']);
             }
@@ -24,10 +32,15 @@ class Activity
                 $this->setOwner($data['owner']);
             }
         }
-        if (isset($item->description)) {
-            preg_match('/(?P<points>points=[0-9]+)/', $item->description, $matches);
-            if (isset($matches['points'])) {
-                $this->setPoints($matches['points']);
+        if ($item) {
+            $this->setId($item->id);
+            $this->setName(trim(strtr($item->summary, array('[cleangame]'=>''))));
+            $this->setDeadline(new \DateTime($item->end->date.' -1 day'));
+            if (isset($item->description)) {
+                preg_match('/points=(?P<points>[0-9]+)/', $item->description, $matches);
+                if (isset($matches['points'])) {
+                    $this->setPoints($matches['points']);
+                }
             }
         }
     }

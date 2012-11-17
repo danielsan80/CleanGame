@@ -1,73 +1,68 @@
 {% extends 'layout.html.twig' %}
 
 {% block main %}
-    <table class=" table activities">
-        <tr>
-            <th class="name" >Attività</th>
-            <th class="points" >Punti</th>
-            <th>Scadenza</th>
-            <th>Fatto?</th>
-            <th>Incaricato</th>
-        </tr>
-        {% for activity in activities %}
-            <tr id="{{activity.id}}" class="activity {% if activity.expired %}expired{% endif %}" >
-                <td class="name" >{{activity.name}}</td>
-                <td class="points" >{{activity.points}}</td>
-                <td>{{activity.deadline|date('d/m/Y')}}</td>
-                <td class="done" >
-                    {% if activity.done %}
-                        <a class="done" href="#"><i class="icon-ok"></i></a>
-                    {% else %}
-                        <a class="todo" href="#"><i class="icon-remove"></i></a>
-                    {% endif %}
-                </td>
-                <td class="owner">
-                    <input type="text" value="{{activity.owner}}" />
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
-{% endblock %}
+<p>
+    è un sistema di <b>autoorganizzazione delle pulizie</b> di un luogo utilizzato
+    da più persone o gruppi di persone.
+</p>
 
-{% block javascript %}
-    {{parent()}}
-    <script>
-        $('td.owner input').bind('change', function() {
-            var input = $(this);
-            var id = input.parents('tr.activity').attr('id');
-            var owner = input.val();
-            $.ajax({
-                url: "/activity/"+id+"/owner",
-                data: {owner: owner},
-                dataType: "text",
-                type: "POST",
-                success: function(data){},
-                error: function(data){alert('communication error');}
-            });            
-        });
+<h3>Come funziona</h3>
+<p>
+    <a href="/agents" >Registra la tua squadra</a> poi seleziona alcune
+    <a href="/activities">attività da eseguire</a>
+    e prendile in carico.<br/>
+    Organizzati con la tua squadra, trovati con loro sul posto e cerca di
+    eseguire tutte le attività.<br/>
+    Poi torna <a href="/activities">qui</a> e dichiara de averle fatte.
+</p>
 
-        $('td.done a').bind('click', function(event) {
-            event.preventDefault();
-            var a = $(this);           
-            var id = a.parents('tr.activity').attr('id');
-            var done = a.hasClass('todo');
-            $.ajax({
-                url: "/activity/"+id+"/done",
-                data: {done: done},
-                dataType: "text",
-                type: "POST",
-                success: function(data){
-                    if (data=='true') {
-                        a.find('i').removeClass('icon-remove').addClass('icon-ok');
-                        a.removeClass('todo').addClass('done');
-                        console.log(a.attr('class'));
-                    } else {
-                        a.find('i').removeClass('icon-ok').addClass('icon-remove');
-                        a.removeClass('done').addClass('todo');
-                    }
-                },
-                error: function(data){alert('communication error');}
-            });
-        });
-    </script>
+<h3>Il punteggio</h3>
+<p>
+    <b>Ogni attività ha un punteggio</b> determinato empiricamante in base al grado di
+    difficoltà/tempo necessario/frequenza di eseguzione. Più attività svolgerà
+    la tua squadra maggiore sarà il suo punteggio.<br/>
+</p>
+<p>
+    Il punteggio verrà diviso per il numero di componenti della squadra,
+    quindi se <i>The cleaners</i> che sono in 5 svolgono attività per 10 punti
+    guadagneranno 2 punti.
+</p>
+
+<h3>Arbitrio</h3>
+<p>
+    Nessuno controllerà che abbiate fatto quello che dichiarate di aver fatto
+    e se l'avete fatto bene. Siate <b>onesti</b> con voi stessi e con gli altri.
+</p>
+<p>
+    E quando sarete <b>in cima</b> alla <a href="/teams">classifica</a>? <b>Rilassatevi</b>! Non ne avrete per
+    un bel po'.<br/>
+    Se invece siete <b>in fondo</b>? Beh cosa aspettate? Sapete che dovete fare.
+</p>
+
+<h3>Ma è un gioco?</h3>
+<p>
+    Perché impostare le pulizie come un <b>gioco</b>? 
+</p>
+<p>
+    Questa si chiama <b>gamificazione</b> ossia sfruttare gli istinti primordiali
+    per rendere apprezzabile se non divertente ciò potrebbe non esserlo.
+</p>
+<p>
+    Una visione d'insieme di ciò che c'è da fare e di ciò che è stato fatto
+    aiuta le persone ad avere <b>consapevolezza</b> del valore del loro contributo.
+</p>
+<p>
+    Il fatto che siano le persone a prendersi in carico le attività anziché
+    qualcun altro ad impogliele aumenta il livello di <b>responsabilizzazione</b> delle
+    stesse.
+</p>
+
+<h3>3, 2, 1... Via</h3>
+<p>
+    Il gioco è già iniziato... non attendete oltre. Chi entra dopo parte comunque
+    <b>da zero</b>. Se il gioco funziona allora lo renderemo più fair! 
+</p>
+<p>
+    Avanti!
+</p>
 {% endblock %}

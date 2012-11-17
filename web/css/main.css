@@ -2,3 +2,7 @@
     color: red;
     font-weight: bold;
 }
+table.teams th.number input[type="text"] {width: 20px; text-align: right; }
+table.teams th.number { text-align: right; }
+table.teams td.number { text-align: right; }
+table.teams input.btn { margin-top: 7px; }

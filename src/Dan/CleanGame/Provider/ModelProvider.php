@@ -14,6 +14,7 @@ namespace Dan\CleanGame\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Dan\CleanGame\Model\ActivityManager;
+use Dan\CleanGame\Model\TeamManager;
 
 /**
  * Symfony HttpFoundation component Provider for sessions.
@@ -31,6 +32,14 @@ class ModelProvider implements ServiceProviderInterface
             $activityManager->setDataPath($app['config']['data']['path']);
 
             return $activityManager;
+        });
+        
+        $app['cleangame.manager.team'] = $app->share(function () use ($app) {
+            $teamManager = new TeamManager();
+            $teamManager->setActivityManager($app['cleangame.manager.activity']);
+            $teamManager->setDataPath($app['config']['data']['path']);
+
+            return $teamManager;
         });
         
     }

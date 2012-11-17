@@ -2,49 +2,31 @@
 
 namespace Dan\CleanGame\Model;
 
-class Activity
+class Team
 {
-    private $id;
+    private $position;
     private $name;
-    private $deadline;
+    private $number;
     private $points=0;
-    private $done=false;
-    private $owner;
     
-    public function __construct($item, $data=null) {
-        $this->setId($item->id);
-        $this->setName(trim(strtr($item->summary, array('[cleangame]'=>''))));
-        $this->setDeadline(new \DateTime($item->end->date.' -1 day'));
-        
-        if ($data) {
-            if (isset($data['done'])) {
-                $this->setDone($data['done']);
-            }
-            if (isset($data['owner'])) {
-                $this->setOwner($data['owner']);
-            }
-        }
-        if (isset($item->description)) {
-            preg_match('/(?P<points>points=[0-9]+)/', $item->description, $matches);
-            if (isset($matches['points'])) {
-                $this->setPoints($matches['points']);
-            }
-        }
+    public function __construct($data) {
+        $this->setName($data['name']);
+        $this->setNumber($data['number']);
     }
     
-    public function setId($id)
+    public function setPosition($position)
     {
-        $this->id = $id;
+        $this->position = $position;
     }
     
-    public function getId()
+    public function getPosition()
     {
-        return $this->id;
+        return $this->position;
     }
     
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = trim($name);
     }
     
     public function getName()
@@ -52,19 +34,19 @@ class Activity
         return $this->name;
     }
     
-    public function setDeadline($deadline)
+    public function setNumber($number)
     {
-        $this->deadline = $deadline;
+        $this->number = (int)$number;
     }
     
-    public function getDeadline()
+    public function getNumber()
     {
-        return $this->deadline;
+        return $this->number;
     }
     
     public function setPoints($points)
     {
-        $this->points = (int)$points;
+        $this->points = $points;
     }
     
     public function getPoints()
@@ -72,49 +54,13 @@ class Activity
         return $this->points;
     }
     
-    public function setDone($done = true)
-    {
-        if ($done==='1' || $done==='true') {
-            $done = true;
-        }
-        if ($done==='0' || $done==='false') {
-            $done = false;
-        }
-        
-        $this->done = (bool)$done;
-    }
-    
-    public function isDone()
-    {
-        return $this->done;
-    }
-    
-    public function setOwner($owner)
-    {
-        if (!$owner) {
-            $owner = null;
-        }
-        $this->owner = $owner;
-    }
-    
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-    
-    public function isExpired()
-    {
-        return $this->getDeadline() < new \DateTime();
-    }
     public function toArray()
     {
         return array(
-          'id' => $this->getId(),
+          'position' => $this->getPosition(),
           'name' => $this->getName(),
-          'deadline' => $this->getDeadline(),
-          'done' => $this->isDone(),
-          'owner' => $this->getOwner(),
-          'expired' => $this->isExpired(),
+          'number' => $this->getNumber(),
+          'points' => $this->getPoints(),
         );
     }
 }

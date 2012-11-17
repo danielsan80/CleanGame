@@ -1,5 +1,6 @@
 {% extends 'layout.html.twig' %}
 
+{% block title %}{{parent()}} - attività{% endblock %}
 {% block main %}
     <table class=" table activities">
         <tr>
@@ -22,7 +23,15 @@
                     {% endif %}
                 </td>
                 <td class="owner">
-                    <input type="text" value="{{activity.owner}}" />
+                    {#<input type="text" value="{{activity.owner}}" />#}
+                    <select name="owner">
+                            <option value="" ></option>
+                        {% for team in teams %}
+                            <option value="{{team.name}}" {% if activity.owner == team.name %}selected="selected"{% endif %} >
+                                {{team.name}}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </td>
             </tr>
         {% endfor %}
@@ -32,12 +41,12 @@
 {% block javascript %}
     {{parent()}}
     <script>
-        $('td.owner input').bind('change', function() {
+        $('td.owner select').bind('change', function() {
             var input = $(this);
             var id = input.parents('tr.activity').attr('id');
             var owner = input.val();
             $.ajax({
-                url: "/activity/"+id+"/owner",
+                url: "/activities/"+id+"/owner",
                 data: {owner: owner},
                 dataType: "text",
                 type: "POST",
@@ -52,7 +61,7 @@
             var id = a.parents('tr.activity').attr('id');
             var done = a.hasClass('todo');
             $.ajax({
-                url: "/activity/"+id+"/done",
+                url: "/activities/"+id+"/done",
                 data: {done: done},
                 dataType: "text",
                 type: "POST",

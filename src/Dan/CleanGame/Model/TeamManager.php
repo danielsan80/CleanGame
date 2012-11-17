@@ -2,78 +2,78 @@
 
 namespace Dan\CleanGame\Model;
 
-class ActivityManager
+class TeamManager
 {
     const BASE_PATH = '/../../../..';
     
-    private $guzzleClient;
-    private $googleConfig;
     private $dataPath;
-    
-    public function setGuzzleClient($client) {
-        $this->guzzleClient = $client;
-    }
-  
-    public function setGoogleConfig($config) {
-        $this->googleConfig = $config;
-    }
+    private $activityManager;
     
     public function setDataPath($path) {
         $this->dataPath = $path;
     }
     
-    public function getActivities()
+    public function setActivityManager($activityManager) {
+        $this->activityManager = $activityManager;
+    }
+    
+    public function getTeams()
     {
-        $client = $this->guzzleClient;
-        $config = $this->googleConfig;
-        $client->setBaseUrl('https://www.googleapis.com/calendar/v3?key='.$config['client']['developerKey']);
-        $request = $client->get('calendars/'.$config['calendar']['id'].'/events');
-        $query = $request->getQuery();
-        $start = new \DateTime('-2 weeks');
-        //$end = new \DateTime('+2 weeks');
-        $query->set('timeMin', $start->format('Y-m-d\TH:i:s.000P'));
-        //$query->set('timeMax', $end->format('Y-m-d\TH:i:s.000P'));
-        $query->set('orderBy', 'startTime');
-        $query->set('singleEvents', 'true');
-        $query->set('maxResults', 20);
-        $response = $request->send();
-        $calendar = json_decode($response->getBody(true));
-        $items = isset($calendar->items)?$calendar->items:array();
-        $cleanGameItems = array();
-        $data = $this->getActivitiesData();
-        $activities = array();
-        foreach ($items as $i => $event) {
-            
-            if ($this->isActivity($event)) {
-                $activities[] = new Activity($event, $this->getActivityData($event->id));
+        $activities = $this->activityManager->getDoneActivities();
+        $teamsPoints = array();
+        
+        foreach ($activities as $activity) {
+            $owner = $activity->getOwner();
+            if (!isset($teamsPoints[$owner])) {
+                $teamsPoints[$owner] = 0;
             }
+            $teamsPoints[$owner] += $activity->getPoints();
         }
         
-        return $activities;
-    }
-    
-    public function find($id) {
-        $client = $this->guzzleClient;
-        $config = $this->googleConfig;
-        $client->setBaseUrl('https://www.googleapis.com/calendar/v3?key='.$config['client']['developerKey']);
-        $request = $client->get('calendars/'.$config['calendar']['id'].'/events/'.$id);
-        $response = $request->send();
-        $event = json_decode($response->getBody(true));
-        return new Activity($event, $this->getActivityData($event->id) );
-    }
-    
-    public function save(Activity $activity) {
         
-        $this->setActivityData($activity->toArray());
+        $data = $this->getTeamsData();
+        $teams = array();
+        foreach ($data as $i => $item) {
+            $team = new Team(get_object_vars($item));
+            if (isset($teamsPoints[$team->getName()])) {
+                $team->setPoints($teamsPoints[$team->getName()]/$team->getNumber());
+            }
+            
+            $teams[] = $team;
+            
+        }
+        
+        usort($teams, array('self', 'compareTeams'));
+        $teams = array_reverse($teams);
+        
+        return $teams;
     }
     
-    private function getActivitiesDataFilename()
+    private function compareTeams($team1, $team2)
     {
-        return __DIR__.self::BASE_PATH.$this->dataPath.'/activities.json';
+        
+        if ($team1->getPoints() == $team2->getPoints()) {
+            return 0;
+        }
+        return ($team1->getPoints() > $team2->getPoints()) ? +1 : -1;
     }
     
-    private function getActivitiesData() {
-        $dataFile = $this->getActivitiesDataFilename();
+    public function find($name) {
+        return new Team($this->getTeamData($name) );
+    }
+    
+    public function save(Team $team) {
+        
+        $this->setTeamData($team);
+    }
+    
+    private function getTeamsDataFilename()
+    {
+        return __DIR__.self::BASE_PATH.$this->dataPath.'/teams.json';
+    }
+    
+    private function getTeamsData() {
+        $dataFile = $this->getTeamsDataFilename();
         if (file_exists($dataFile)) {
             $data = json_decode(file_get_contents($dataFile));
         } else {
@@ -83,39 +83,33 @@ class ActivityManager
         return $data;
     }
     
-    private function getActivityData($id) {
-        $data = $this->getActivitiesData();
-        foreach($data as $array) {
-            if ($array->id == $id) {
-                return get_object_vars($array);
+    private function getTeamData($name) {
+        $data = $this->getTeamsData();
+        foreach($data as $item) {
+            if ($item->name == $name) {
+                return get_object_vars($item);
             }
         }
         return null;
     }
     
-    private function setActivityData($activityData) {
-        $data = $this->getActivitiesData();
-        foreach($data as $i => $array) {
-            if ($array->id == $activityData['id']) {
-                $data[$i] = $activityData;
-                $this->setActivitiesData($data);
+    private function setTeamData(Team $team) {
+        $data = $this->getTeamsData();
+        foreach($data as $i => $item ){
+            if ($item->name == $team->getName()) {
+                $data[$i] = $team->toArray();
+                $this->setTeamsData($data);
                 return;
             }
         }
-        $data[] = $activityData;
-        $this->setActivitiesData($data);
+        $data[] = $team->toArray();
+        $this->setTeamsData($data);
     }
     
-    private function setActivitiesData($data) {
-        $dataFile = $this->getActivitiesDataFilename();
+    private function setTeamsData($data) {
+        $dataFile = $this->getTeamsDataFilename();
         
         file_put_contents($dataFile, json_encode($data));
     }
     
-    public function isActivity($item)
-    {
-        return true;
-        return preg_match('/\[cleangame\]/', $item->summary);
-    }
-
 }

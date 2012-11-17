@@ -22,7 +22,7 @@ class ActivityManager
         $this->dataPath = $path;
     }
     
-    public function getActivities()
+    public function getCurrentActivities()
     {
         $client = $this->guzzleClient;
         $config = $this->googleConfig;
@@ -30,22 +30,40 @@ class ActivityManager
         $request = $client->get('calendars/'.$config['calendar']['id'].'/events');
         $query = $request->getQuery();
         $start = new \DateTime('-2 weeks');
-        //$end = new \DateTime('+2 weeks');
         $query->set('timeMin', $start->format('Y-m-d\TH:i:s.000P'));
-        //$query->set('timeMax', $end->format('Y-m-d\TH:i:s.000P'));
         $query->set('orderBy', 'startTime');
         $query->set('singleEvents', 'true');
         $query->set('maxResults', 20);
         $response = $request->send();
         $calendar = json_decode($response->getBody(true));
-        $items = isset($calendar->items)?$calendar->items:array();
-        $cleanGameItems = array();
-        $data = $this->getActivitiesData();
+        $events = isset($calendar->items)?$calendar->items:array();
         $activities = array();
-        foreach ($items as $i => $event) {
-            
-            if ($this->isActivity($event)) {
-                $activities[] = new Activity($event, $this->getActivityData($event->id));
+        foreach ($events as $i => $event) {
+            $activities[] = new Activity($event, $this->getActivityData($event->id));
+        }
+        
+        return $activities;
+    }
+    
+    public function getDoneActivities()
+    {
+        $client = $this->guzzleClient;
+        $config = $this->googleConfig;
+        $client->setBaseUrl('https://www.googleapis.com/calendar/v3?key='.$config['client']['developerKey']);
+        $request = $client->get('calendars/'.$config['calendar']['id'].'/events');
+        $query = $request->getQuery();
+        $end = new \DateTime('+2 month');
+        $query->set('timeMax', $end->format('Y-m-d\TH:i:s.000P'));
+        $query->set('orderBy', 'startTime');
+        $query->set('singleEvents', 'true');
+        $response = $request->send();
+        $calendar = json_decode($response->getBody(true));
+        $events = isset($calendar->items)?$calendar->items:array();
+        $activities = array();
+        foreach ($events as $i => $event) {
+            $activity = new Activity($event, $this->getActivityData($event->id));
+            if ($activity->isDone()) {
+                $activities[] = $activity;
             }
         }
         
@@ -72,7 +90,7 @@ class ActivityManager
         return __DIR__.self::BASE_PATH.$this->dataPath.'/activities.json';
     }
     
-    private function getActivitiesData() {
+    public function getActivitiesData() {
         $dataFile = $this->getActivitiesDataFilename();
         if (file_exists($dataFile)) {
             $data = json_decode(file_get_contents($dataFile));
@@ -110,12 +128,6 @@ class ActivityManager
         $dataFile = $this->getActivitiesDataFilename();
         
         file_put_contents($dataFile, json_encode($data));
-    }
-    
-    public function isActivity($item)
-    {
-        return true;
-        return preg_match('/\[cleangame\]/', $item->summary);
     }
 
 }
