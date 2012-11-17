@@ -1,0 +1,9 @@
+RewriteEngine On
+
+RewriteRule ^\.htaccess$ - [F]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^.*$ - [NC,L]
+
+RewriteCond %{REQUEST_URI} !^/web/.*$
+RewriteRule ^(.*)$ /web/$1

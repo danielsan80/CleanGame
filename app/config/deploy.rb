@@ -16,17 +16,18 @@ set  :use_sudo,      false
 
 set :copy_exclude, [".git", ".DS_Store", ".gitignore", ".gitmodules"]
 
-set :shared_children, ["data", "vendor"]
+set :shared_children, ["data", "vendor", "app/config"]
 set :shared_files,    ["app/config/config.yml"]
 
 
 after "deploy:symlink" do
-    run "#{shared_path}/composer.phar update"
+    run "rm -Rf #{release_path}/app/config/config.yml"
+    run "mv -n #{release_path}/app/config/config.yml #{shared_path}/app/config/config.yml"
+    run "rm -Rf #{release_path}/data"
     run "ln -nfs #{shared_path}/data #{release_path}/data"
     run "ln -nfs #{shared_path}/vendor #{release_path}/vendor"
     run "ln -nfs #{shared_path}/app/config/config.yml #{release_path}/app/config/config.yml"
-    run "chmod 777 #{shared_path}/data"
-    run "chmod -R 777 #{shared_path}/cache"
+    run "cd #{release_path} && ./composer.phar install"
 end
 
 server "cleangame.danilosanchi.net", :app
