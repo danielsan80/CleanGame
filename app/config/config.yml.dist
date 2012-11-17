@@ -3,9 +3,9 @@ config:
     client:
       applicationName: CleanGame
       clientId: 633253106061.apps.googleusercontent.com
-      clientSecret: Ue6SDQmwjhEszVatXXEwrfcX
+      clientSecret: [clientSecret]
       redirectUri: http://cleangame.local.com/oauth2callback
-      developerKey: AIzaSyAKC5K-0H6mt2rpjwMkn9SwneTR2P867J8
+      developerKey: [developerKey]
     calendar:
       id: g5p17tlpbuug5a9inhsn3ludpk@group.calendar.google.com
   data:
