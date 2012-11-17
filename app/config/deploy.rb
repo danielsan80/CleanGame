@@ -21,7 +21,8 @@ set :shared_files,    ["app/config/config.yml"]
 
 
 after "deploy:symlink" do
-    run "cp -a #{release_path}/app/config/config.yml #{shared_path}/app/config/config.yml"
+    run "cp #{shared_path}/app/config/config.yml #{shared_path}/app/config/config.yml~"
+    run "cp -a #{release_path}/app/config/config.yml.dist #{shared_path}/app/config/config.yml"
     run "mv #{shared_path}/app/config/config.yml~ #{shared_path}/app/config/config.yml"
     run "rm -Rf #{release_path}/app/config/config.yml"
     run "ln -nfs #{shared_path}/app/config/config.yml #{release_path}/app/config/config.yml"
