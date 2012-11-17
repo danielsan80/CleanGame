@@ -7,3 +7,8 @@ cache/*
 
 data/*
 !cache/.gitkeep
+
+# Capistrano
+.rsync_cache
+ssh-connect
+REVISION

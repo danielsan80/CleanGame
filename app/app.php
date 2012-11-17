@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 $app = new Silex\Application();
 
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../app/config.yml"));
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../app/config/config.yml"));
 
 $app->register(new Silex\Provider\SessionServiceProvider(), array(
     'session.storage.save_path' => __DIR__.'/../cache',
