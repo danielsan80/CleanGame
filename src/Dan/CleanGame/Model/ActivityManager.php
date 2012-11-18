@@ -34,7 +34,11 @@ class ActivityManager
         $query->set('orderBy', 'startTime');
         $query->set('singleEvents', 'true');
         $query->set('maxResults', 20);
-        $response = $request->send();
+        try {
+            $response = $request->send();
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
 //        $calendar = json_decode($response->getBody(true));
 //        $events = isset($calendar->items)?$calendar->items:array();
         $activities = array();
