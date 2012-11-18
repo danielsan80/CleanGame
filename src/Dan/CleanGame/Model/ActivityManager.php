@@ -24,16 +24,16 @@ class ActivityManager
     
     public function getCurrentActivities()
     {
-//        $client = $this->guzzleClient;
-//        $config = $this->googleConfig;
-//        $client->setBaseUrl('https://www.googleapis.com/calendar/v3?key='.$config['client']['developerKey']);
-//        $request = $client->get('calendars/'.$config['calendar']['id'].'/events');
-//        $query = $request->getQuery();
-//        $start = new \DateTime('-2 weeks');
-//        $query->set('timeMin', $start->format('Y-m-d\TH:i:s.000P'));
-//        $query->set('orderBy', 'startTime');
-//        $query->set('singleEvents', 'true');
-//        $query->set('maxResults', 20);
+        $client = $this->guzzleClient;
+        $config = $this->googleConfig;
+        $client->setBaseUrl('https://www.googleapis.com/calendar/v3?key='.$config['client']['developerKey']);
+        $request = $client->get('calendars/'.$config['calendar']['id'].'/events');
+        $query = $request->getQuery();
+        $start = new \DateTime('-2 weeks');
+        $query->set('timeMin', $start->format('Y-m-d\TH:i:s.000P'));
+        $query->set('orderBy', 'startTime');
+        $query->set('singleEvents', 'true');
+        $query->set('maxResults', 20);
 //        $response = $request->send();
 //        $calendar = json_decode($response->getBody(true));
 //        $events = isset($calendar->items)?$calendar->items:array();

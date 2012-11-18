@@ -20,7 +20,7 @@ class TeamManager
     
     public function getTeams()
     {
-        $activities = $this->activityManager->getCurrentActivities();
+        $activities = $this->activityManager->getDoneActivities();
         $teamsPoints = array();
         
         foreach ($activities as $activity) {

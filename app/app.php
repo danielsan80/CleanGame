@@ -85,7 +85,7 @@ $app->get('/activities', function() use ($app) {
     
     $activities = $app['cleangame.manager.activity']->getCurrentActivities();
     $teamManager = $app['cleangame.manager.team'];
-    $teams = $teamManager->getTeams();
+//    $teams = $teamManager->getTeams();
     
     return $app['twig']->render('activities.html.twig', array(
             'activities' => $activities,
