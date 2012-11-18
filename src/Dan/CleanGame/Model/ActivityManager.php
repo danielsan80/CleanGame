@@ -34,17 +34,13 @@ class ActivityManager
         $query->set('orderBy', 'startTime');
         $query->set('singleEvents', 'true');
         $query->set('maxResults', 20);
-        try {
-            $response = $request->send();
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-        }
-//        $calendar = json_decode($response->getBody(true));
-//        $events = isset($calendar->items)?$calendar->items:array();
+        $response = $request->send();
+        $calendar = json_decode($response->getBody(true));
+        $events = isset($calendar->items)?$calendar->items:array();
         $activities = array();
-//        foreach ($events as $i => $event) {
-//            $activities[] = new Activity($event, $this->store->getEntityData($event->id));
-//        }
+        foreach ($events as $i => $event) {
+            $activities[] = new Activity($event, $this->store->getEntityData($event->id));
+        }
         
         return $activities;
     }
