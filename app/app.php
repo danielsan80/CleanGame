@@ -83,7 +83,7 @@ $app->match('/teams', function() use ($app) {
 
 $app->get('/activities', function() use ($app) {
     
-    $activityManager = $app['cleangame.manager.activity']->getCurrentActivities();
+    $activities = $app['cleangame.manager.activity']->getCurrentActivities();
 //    $teams = $app['cleangame.manager.team']->getTeams();
     
     return $app['twig']->render('activities.html.twig', array(
